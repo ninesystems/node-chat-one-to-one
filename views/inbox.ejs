@@ -32,14 +32,13 @@
                 <% } %>
             </div>
         </div>
-        <div class="mesgs">
+        <div class="mesgs" style="display:none">
 
             <div class="msg_history">
                 <div class="col-12 mb-3 pt-0 mt-0">
-                    <strong>Welcome,
-                        <%= user %></strong>
+                    <span id="username"></span>
                 </div>
-                <div class="incoming_msg">
+                <!-- <div class="incoming_msg">
                     <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
                     </div>
                     <div class="received_msg">
@@ -56,37 +55,10 @@
                             solutions</p>
                         <span class="time_date"> 11:01 AM | June 9</span>
                     </div>
-                </div>
-                <div class="incoming_msg">
-                    <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
-                    </div>
-                    <div class="received_msg">
-                        <div class="received_withd_msg">
-                            <p>Test, which is a new approach to have</p>
-                            <span class="time_date"> 11:01 AM | Yesterday</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="outgoing_msg">
-                    <div class="sent_msg">
-                        <p>Apollo University, Delhi, India</p>
-                        <span class="time_date"> 11:01 AM | Today</span>
-                    </div>
-                </div>
-                <div class="incoming_msg">
-                    <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
-                    </div>
-                    <div class="received_msg">
-                        <div class="received_withd_msg">
-                            <p>We work directly with our designers and suppliers,
-                                and sell direct to you, which means quality, exclusive
-                                products, at a price anyone can afford.</p>
-                            <span class="time_date"> 11:01 AM | Today</span>
-                        </div>
-                    </div>
-                </div>
+                </div> -->
             </div>
             <div class="type_msg">
+                <span class="pencil_anim" style="display:none">Typing.....</span>
                 <div class="input_msg_write">
                     <input type="text" class="write_msg" placeholder="Type a message" style="border:0; outline: none;" />
                     <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
@@ -100,7 +72,9 @@
 <script src="/javascripts/socket.io.js"></script>
 <script>
     var my_id = null;
-    var username = '<%= user %>';
+    var user_id = null;
+    var username = null;
+    var myname = '<%= user %>';
     var socket = io('http://localhost:7777', {
         query: {
             username: '<%= user %>'
@@ -110,8 +84,20 @@
         my_id = socket.id;
     });
     socket.on('typing', function (data) {
-        console.log(data.from, " is typing");
+        if (my_id != data.from) {
+            $(".pencil_anim").show();
+        }
     });
+    socket.on('styp', function (data) {
+        console.log("Recieven stop event");
+        $(".pencil_anim").hide();
+        /*if (my_id != data.from) {
+            $(".pencil_anim").hide();
+        }*/
+    });
+    socket.on("message", function (data) {
+        $(".pencil_anim").hide();
+    })
     socket.on('newuser', function (data) {
         if (data.name != username) {
             //alert("new user joined")
@@ -120,14 +106,28 @@
     socket.on('disconnect', function () {});
 
     $("document").ready(function () {
+        $(".pencil_anim").hide();
+        user_id = $(".chat_list.active_chat").find("input").val();
+        username = $(this).find(".chat_ib").text();
+
         $(".chat_list").on('click', function () {
             $(".chat_list").removeClass("active_chat")
             $(this).addClass("active_chat")
+            $("#username").html("Talking to <strong>" + $(this).find(".chat_ib").text() + "</strong>");
+            $(".mesgs").show();
         })
         $(".msg_send_btn").on("click", function () {
             sendMessage();
         })
         $(".write_msg").keyup(function (event) {
+            var data = $(".write_msg").val();
+            if ( data==null || data=="") {
+                console.log("emmitting event")
+                socket.emit('styp', {
+                    from: my_id
+                });
+                return;
+            }
             socket.emit('typing', {
                 from: my_id
             });
@@ -139,7 +139,6 @@
         function sendMessage() {
             var data = $(".write_msg").val();
             var user_id = $(".chat_list.active_chat").find("input").val();
-            alert(user_id + " === " + data)
             socket.emit('message', {
                 from: my_id,
                 to: user_id

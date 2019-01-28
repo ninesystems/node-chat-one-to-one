@@ -25,7 +25,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.set('trust proxy', 1) // trust first proxy
 app.use(session({
-  secret: 'sessi0nS3cr3t'
+  secret: 'sessi0nS3cr3t',
+  saveUninitialized:true,
+  resave:false
 }))
 
 
@@ -51,7 +53,7 @@ io.on('connection', (client) => {
     }
   });
   users.push({id:client.id, name:token});
-  console.log(users);
+
   client.on('typing', (data) => { 
     io.emit("typing", data)
   });
@@ -61,8 +63,6 @@ io.on('connection', (client) => {
   });
 
   io.emit("newuser", {id:client.id, name:token})
-
-
 });
 chatServer.listen(7777);
 
