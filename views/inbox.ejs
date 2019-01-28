@@ -1,0 +1,149 @@
+<div class="messaging">
+    <div class="inbox_msg">
+        <div class="inbox_people">
+            <div class="headind_srch">
+                <div class="recent_heading">
+                    <h4>Recent</h4>
+                </div>
+                <div class="srch_bar">
+                    <div class="stylish-input-group">
+                        <input type="text" class="search-bar" placeholder="Search">
+                        <span class="input-group-addon">
+                            <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+                        </span> </div>
+                </div>
+            </div>
+            <div class="inbox_chat">
+                <% for (var i=0; i< users.length; i++){ %>
+                <% if(users[i].name!=user){ %>
+                <div class="chat_list">
+                    <div class="chat_people">
+                        <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
+                        </div>
+                        <div class="chat_ib">
+                            <h5>
+                                <%= users[i].name %>
+                            </h5>
+                        </div>
+                        <input type="hidden" class="u" value="<%= users[i].id %>" />
+                    </div>
+                </div>
+                <% }   %>
+                <% } %>
+            </div>
+        </div>
+        <div class="mesgs">
+
+            <div class="msg_history">
+                <div class="col-12 mb-3 pt-0 mt-0">
+                    <strong>Welcome,
+                        <%= user %></strong>
+                </div>
+                <div class="incoming_msg">
+                    <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
+                    </div>
+                    <div class="received_msg">
+                        <div class="received_withd_msg">
+                            <p>Test which is a new approach to have all
+                                solutions</p>
+                            <span class="time_date"> 11:01 AM | June 9</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="outgoing_msg">
+                    <div class="sent_msg">
+                        <p>Test which is a new approach to have all
+                            solutions</p>
+                        <span class="time_date"> 11:01 AM | June 9</span>
+                    </div>
+                </div>
+                <div class="incoming_msg">
+                    <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
+                    </div>
+                    <div class="received_msg">
+                        <div class="received_withd_msg">
+                            <p>Test, which is a new approach to have</p>
+                            <span class="time_date"> 11:01 AM | Yesterday</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="outgoing_msg">
+                    <div class="sent_msg">
+                        <p>Apollo University, Delhi, India</p>
+                        <span class="time_date"> 11:01 AM | Today</span>
+                    </div>
+                </div>
+                <div class="incoming_msg">
+                    <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
+                    </div>
+                    <div class="received_msg">
+                        <div class="received_withd_msg">
+                            <p>We work directly with our designers and suppliers,
+                                and sell direct to you, which means quality, exclusive
+                                products, at a price anyone can afford.</p>
+                            <span class="time_date"> 11:01 AM | Today</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="type_msg">
+                <div class="input_msg_write">
+                    <input type="text" class="write_msg" placeholder="Type a message" style="border:0; outline: none;" />
+                    <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/javascripts/socket.io.js"></script>
+<script>
+    var my_id = null;
+    var username = '<%= user %>';
+    var socket = io('http://localhost:7777', {
+        query: {
+            username: '<%= user %>'
+        }
+    });
+    socket.on('connect', function () {
+        my_id = socket.id;
+    });
+    socket.on('typing', function (data) {
+        console.log(data.from, " is typing");
+    });
+    socket.on('newuser', function (data) {
+        if (data.name != username) {
+            //alert("new user joined")
+        }
+    })
+    socket.on('disconnect', function () {});
+
+    $("document").ready(function () {
+        $(".chat_list").on('click', function () {
+            $(".chat_list").removeClass("active_chat")
+            $(this).addClass("active_chat")
+        })
+        $(".msg_send_btn").on("click", function () {
+            sendMessage();
+        })
+        $(".write_msg").keyup(function (event) {
+            socket.emit('typing', {
+                from: my_id
+            });
+            if (event.which == 13) {
+                sendMessage()
+            }
+        })
+
+        function sendMessage() {
+            var data = $(".write_msg").val();
+            var user_id = $(".chat_list.active_chat").find("input").val();
+            alert(user_id + " === " + data)
+            socket.emit('message', {
+                from: my_id,
+                to: user_id
+            });
+        }
+    });
+</script>
