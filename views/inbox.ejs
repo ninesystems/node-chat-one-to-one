@@ -89,7 +89,7 @@
                 $(".pencil_anim").show();
             }
         });
-        socket.on('styp', function (data) {
+        socket.on('stoptyping', function (data) {
             console.log("Recieven stop event");
             $(".pencil_anim").hide();
             /*if (my_id != data.from) {
@@ -98,7 +98,7 @@
         });
         socket.on("message", function (data) {
             //console.log(myname, data.to, (data.to.trim()==myname.trim()));
-            if(myname.trim()==data.from.trim()){
+            if (myname.trim() == data.from.trim()) {
                 $(".msg_history").append(
                     `<div class="outgoing_msg">
                     <div class="sent_msg">
@@ -107,8 +107,7 @@
                     </div>
                 </div>`
                 )
-            }
-            else if (myname.trim() == data.to.trim()) {
+            } else if (myname.trim() == data.to.trim()) {
                 $(".msg_history").append(
                     `<div class="incoming_msg">
                     <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png" alt="${data.from}">
@@ -147,7 +146,7 @@
         $(".write_msg").keyup(function (event) {
             var data = $(".write_msg").val();
             if (data == null || data == "") {
-                socket.emit('styp', {
+                socket.emit('stoptyping', {
                     from: myname
                 });
                 return;
