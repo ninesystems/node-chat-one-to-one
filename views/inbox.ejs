@@ -69,43 +69,64 @@
 </div>
 
 
-<script src="/javascripts/socket.io.js"></script>
-<script>
-    var my_id = null;
-    var user_id = null;
-    var username = null;
-    var myname = '<%= user %>';
-    var socket = io('http://localhost:7777', {
-        query: {
-            username: '<%= user %>'
-        }
-    });
-    socket.on('connect', function () {
-        my_id = socket.id;
-    });
-    socket.on('typing', function (data) {
-        if (my_id != data.from) {
-            $(".pencil_anim").show();
-        }
-    });
-    socket.on('styp', function (data) {
-        console.log("Recieven stop event");
-        $(".pencil_anim").hide();
-        /*if (my_id != data.from) {
-            $(".pencil_anim").hide();
-        }*/
-    });
-    socket.on("message", function (data) {
-        $(".pencil_anim").hide();
-    })
-    socket.on('newuser', function (data) {
-        if (data.name != username) {
-            //alert("new user joined")
-        }
-    })
-    socket.on('disconnect', function () {});
 
+<script src="/javascripts/socket.io.js"></script>
+<script src="/javascripts/moment.min.js"></script>
+<script>
     $("document").ready(function () {
+        var my_id = null;
+        var user_id = null;
+        var username = null;
+        var myname = '<%= user %>';
+        var socket = io('http://localhost:7777', {
+            query: {
+                username: '<%= user %>'
+            }
+        });
+        socket.on('connect', function () {
+            my_id = socket.id;
+        });
+        socket.on('typing', function (data) {
+            if (my_id != data.from) {
+                $(".pencil_anim").show();
+            }
+        });
+        socket.on('styp', function (data) {
+            console.log("Recieven stop event");
+            $(".pencil_anim").hide();
+            /*if (my_id != data.from) {
+                $(".pencil_anim").hide();
+            }*/
+        });
+        socket.on("message", function (data) {
+            console.log(my_id, data.to, data.msg);
+            if (my_id == data.to) {
+                $(".msg_history").append(
+                    `<div class="incoming_msg">
+                    <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png" alt="${data.from}">
+                        <span class="username">${username}</span>
+                        </div>
+                    <div class="received_msg">
+                        <div class="received_withd_msg">
+                            <p>${data.msg}</p>
+                            <span class="time_date"> ${moment().fromNow()}</span>
+                        </div>
+                    </div>
+                </div>`
+                )
+            } else if (data.from == user_id) {
+
+            }
+            $(".pencil_anim").hide();
+        })
+        socket.on('newuser', function (data) {
+            if (data.name != username) {
+                //alert("new user joined")
+            }
+        })
+        socket.on('disconnect', function () {});
+
+
         $(".pencil_anim").hide();
         user_id = $(".chat_list.active_chat").find("input").val();
         username = $(this).find(".chat_ib").text();
@@ -121,7 +142,7 @@
         })
         $(".write_msg").keyup(function (event) {
             var data = $(".write_msg").val();
-            if ( data==null || data=="") {
+            if (data == null || data == "") {
                 console.log("emmitting event")
                 socket.emit('styp', {
                     from: my_id
@@ -141,8 +162,10 @@
             var user_id = $(".chat_list.active_chat").find("input").val();
             socket.emit('message', {
                 from: my_id,
-                to: user_id
+                to: user_id,
+                msg: data
             });
+            $(".write_msg").val("");
         }
     });
 </script>
