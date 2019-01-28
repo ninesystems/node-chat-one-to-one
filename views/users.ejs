@@ -1,15 +1,32 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>All users</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <ul>
-    <% for(var i=0; i< users.length; i++ ){ %>
-      <li><%= users[i].name %>
-      </li>
+
+<head>
+  <title>All users</title>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet">
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <div class="container">
+    <% if(users.length==0){ %>
+    <div class="alert alert-info mt-5" role="alert">No user is online</div>
+    <% }else{ %>
+    <table class="table table-striped">
+      <tbody>
+        <% for(var i=0; i< users.length; i++ ){ %>
+        <tr>
+          <td><span class="badge badge-success"> </span></td>
+          <td>
+            <%= users[i].name %>
+          </td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
     <% } %>
-    </ul>
+  </div>
   </body>
+
 </html>
