@@ -2,7 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var session = require('express-session') 
+var session = require('express-session')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -19,7 +19,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cookieParser());
@@ -43,24 +45,32 @@ io.use((socket, next) => {
 io.on('connection', (client) => {
   let token = client.handshake.query.username;
   client.on('disconnect', () => {
-    var clientid = client.id; 
+    var clientid = client.id;
     for (var i = 0; i < users.length; i++)
-    if (users[i].id && users[i].id == clientid) { 
+      if (users[i].id && users[i].id == clientid) {
         users.splice(i, 1);
         break;
-    }
+      }
   });
-  users.push({id:client.id, name:token});
-  console.log(users);
-  client.on('typing', (data) => { 
+  users.push({
+    name: token
+  });
+  client.on('typing', (data) => {
     io.emit("typing", data)
   });
 
-  client.on('message', (data) => { 
+  client.on('stoptyping', (data) => {
+    io.emit("stoptyping", data)
+  });
+
+  client.on('message', (data) => {
     io.emit("message", data)
   });
 
-  io.emit("newuser", {id:client.id, name:token})
+  io.emit("newuser", {
+    id: client.id,
+    name: token
+  })
 
 
 });
@@ -71,13 +81,13 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
