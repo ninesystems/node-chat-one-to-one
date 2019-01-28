@@ -74,8 +74,6 @@
 <script src="/javascripts/moment.min.js"></script>
 <script>
     $("document").ready(function () {
-        var my_id = null;
-        var user_id = null;
         var username = null;
         var myname = '<%= user %>';
         var socket = io('http://localhost:7777', {
@@ -84,10 +82,10 @@
             }
         });
         socket.on('connect', function () {
-            my_id = socket.id;
+            //Add all controls here, instead of document load    
         });
         socket.on('typing', function (data) {
-            if (my_id != data.from) {
+            if (myname != data.from) {
                 $(".pencil_anim").show();
             }
         });
@@ -99,8 +97,18 @@
             }*/
         });
         socket.on("message", function (data) {
-            console.log(my_id, data.to, data.msg);
-            if (my_id == data.to) {
+            //console.log(myname, data.to, (data.to.trim()==myname.trim()));
+            if(myname.trim()==data.from.trim()){
+                $(".msg_history").append(
+                    `<div class="outgoing_msg">
+                    <div class="sent_msg">
+                        <p>${data.msg}</p>
+                        <span class="time_date"> ${moment().fromNow()}</span>
+                    </div>
+                </div>`
+                )
+            }
+            else if (myname.trim() == data.to.trim()) {
                 $(".msg_history").append(
                     `<div class="incoming_msg">
                     <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png" alt="${data.from}">
@@ -114,8 +122,6 @@
                     </div>
                 </div>`
                 )
-            } else if (data.from == user_id) {
-
             }
             $(".pencil_anim").hide();
         })
@@ -126,9 +132,7 @@
         })
         socket.on('disconnect', function () {});
 
-
         $(".pencil_anim").hide();
-        user_id = $(".chat_list.active_chat").find("input").val();
         username = $(this).find(".chat_ib").text();
 
         $(".chat_list").on('click', function () {
@@ -143,14 +147,13 @@
         $(".write_msg").keyup(function (event) {
             var data = $(".write_msg").val();
             if (data == null || data == "") {
-                console.log("emmitting event")
                 socket.emit('styp', {
-                    from: my_id
+                    from: myname
                 });
                 return;
             }
             socket.emit('typing', {
-                from: my_id
+                from: myname
             });
             if (event.which == 13) {
                 sendMessage()
@@ -159,10 +162,9 @@
 
         function sendMessage() {
             var data = $(".write_msg").val();
-            var user_id = $(".chat_list.active_chat").find("input").val();
             socket.emit('message', {
-                from: my_id,
-                to: user_id,
+                from: myname,
+                to: username,
                 msg: data
             });
             $(".write_msg").val("");
