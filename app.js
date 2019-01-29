@@ -74,15 +74,6 @@ io.on('connection', (client) => {
     id: client.id,
     name: token
   })
-
-  client.on('message', (data) => {
-    io.emit("message", data)
-  });
-
-  io.emit("newuser", {
-    id: client.id,
-    name: token
-  })
 });
 chatServer.listen(7777);
 

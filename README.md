@@ -10,6 +10,9 @@ Node socket.io based one to one chat.
  5. Seperate UI, so you can skin as you want.
  6. Developed with Express.js, EJS, Socket.io
 
+![Interface](singlewindow.png)
+![Interface](bothwindow.png)
+
 
 ## ToDO List
  1. Block or Ignore user
