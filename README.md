@@ -10,7 +10,10 @@ Node socket.io based one to one chat.
  5. Seperate UI, so you can skin as you want.
  6. Developed with Express.js, EJS, Socket.io
 
+### Simple interface for the window, very similar to linkedin.
 ![Interface](singlewindow.png)
+
+### Realtime chatting 
 ![Interface](bothwindow.png)
 
 
