@@ -55,6 +55,7 @@ io.on('connection', (client) => {
       }
   });
   users.push({
+    id: client.id,
     name: token
   });
   client.on('typing', (data) => {
