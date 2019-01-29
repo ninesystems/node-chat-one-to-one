@@ -90,14 +90,11 @@
             }
         });
         socket.on('stoptyping', function (data) {
-            console.log("Recieven stop event");
-            $(".pencil_anim").hide();
-            /*if (my_id != data.from) {
+            if (myname != data.from) {
                 $(".pencil_anim").hide();
-            }*/
+            }
         });
         socket.on("message", function (data) {
-            //console.log(myname, data.to, (data.to.trim()==myname.trim()));
             if (myname.trim() == data.from.trim()) {
                 $(".msg_history").append(
                     `<div class="outgoing_msg">
