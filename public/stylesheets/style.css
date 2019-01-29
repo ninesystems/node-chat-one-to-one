@@ -154,8 +154,9 @@ img {
 .time_date {
   color: #747474;
   display: block;
-  font-size: 12px;
+  font-size: 8px;
   margin: 8px 0 0;
+  text-align: right;
 }
 
 .received_withd_msg {
@@ -181,6 +182,11 @@ img {
 .outgoing_msg {
   overflow: hidden;
   margin: 26px 0 26px;
+}
+.username{
+  font-size: 10px;
+  color: #646464;
+  text-align: center;
 }
 
 .sent_msg {
@@ -221,7 +227,7 @@ img {
 }
 
 .msg_history {
-  height: 516px;
+  height: 85vh;
   overflow-y: auto;
 }
 
@@ -254,4 +260,12 @@ img {
   font-weight: 600;
   color: #0062cc;
   background-color: #fff;
+}
+
+.pencil_anim{
+  color: #4c4c4c;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 10px;
+  position: absolute;
+  margin-top: -20px;
 }

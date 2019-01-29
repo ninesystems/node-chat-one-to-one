@@ -27,7 +27,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.set('trust proxy', 1) // trust first proxy
 app.use(session({
-  secret: 'sessi0nS3cr3t'
+  secret: 'sessi0nS3cr3t',
+  saveUninitialized: true,
+  resave: false
 }))
 
 
@@ -72,7 +74,14 @@ io.on('connection', (client) => {
     name: token
   })
 
+  client.on('message', (data) => {
+    io.emit("message", data)
+  });
 
+  io.emit("newuser", {
+    id: client.id,
+    name: token
+  })
 });
 chatServer.listen(7777);
 
