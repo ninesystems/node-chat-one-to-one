@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon app.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
@@ -11,6 +11,9 @@
     "express": "~4.16.0",
     "express-session": "^1.15.6",
     "random-indian-name": "^1.0.0",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }
