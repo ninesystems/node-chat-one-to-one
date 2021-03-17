@@ -5,13 +5,14 @@ var session = require('express-session')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const { normalize } = require('path');
 
 
 
 var app = express();
 
-
 const chatServer = require('http').createServer(app);
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,7 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.set('trust proxy', 1) // trust first proxy
 app.use(session({
-    secret: 'sessi0nS3cr3t',
+    secret: process.env.secret | 'sessi0nS3cr3t',
     saveUninitialized: true,
     resave: false
 }))
@@ -97,5 +98,7 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
-
-module.exports = app;
+let port = process.env.PORT || 4200;
+app.listen(port, function () {
+    console.log('Example app listening on port ', port)
+});
