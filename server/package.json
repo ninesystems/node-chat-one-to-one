@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"npm:ioserver\" \"npm:apiserver\"",
-    "apiserver": "node https.server.js",
-    "ioserver": "node io.server.js"
+    "start": "concurrently \"npm:http\" \"npm:io\"",
+    "apiserver": "nodemon https.server.js",
+    "ioserver": "nodemon io.server.js",
+    "http":"node https.server.js",
+    "io":"node io.server.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",

@@ -2,23 +2,26 @@ let express = require('express');
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let session = require('express-session')
-let indexRouter = require('./routes/index');
+let ReactAppController = require('./routes/index');
+let AuthController = require('./routes/auth');
 // loading .env file to the process
 require('dotenv').config()
 
 let port = process.env.PORT || 4200;
-console.log(port, "using this port to listen", process.env.PORT);
 let app = express();
 
-// view engine setup
+// view engine setup, for secure login at server.
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, 'public')));
+// highjack the above code & make it own.
 
+// Enable json for communication
 app.use(express.json());
 app.use(express.urlencoded({
     extended: false
 }));
-app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use(cookieParser());
 app.set('trust proxy', 1) // trust first proxy
@@ -28,22 +31,19 @@ app.use(session({
     resave: false
 }))
 
-app.use('/', indexRouter);
+// Mousing the index router, if you want to add more, you can mount here. but i feel single route is enough for now.
+app.use('/auth', AuthController);
+app.use('/', ReactAppController);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    res.render('error');
+    res.json({"message":"Page not found", "result":"error", "status":404});
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
+    res.status(200);
+    res.json({"message":"Something went wrong", "result":"error", "status":500});
 });
 
 app.listen(port, function () {
