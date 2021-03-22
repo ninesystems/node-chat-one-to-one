@@ -3,8 +3,11 @@ let path = require('path');
 let cookieParser = require('cookie-parser');
 let session = require('express-session')
 let indexRouter = require('./routes/index');
-let port = process.env.PORT || 4200;
+// loading .env file to the process
+require('dotenv').config()
 
+let port = process.env.PORT || 4200;
+console.log(port, "using this port to listen", process.env.PORT);
 let app = express();
 
 // view engine setup

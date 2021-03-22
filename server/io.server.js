@@ -1,10 +1,15 @@
 
+// loading .env file in process
+require("dotenv").config();
+// Defining user register
 global.users = [];
 
+// Starting socket.io 
 const io = require("socket.io")({
     serveClient: false,
 });
-console.log("starting up io server");
+
+
 io.use((socket, next) => {
     let token = socket.handshake.query.username;
     if (token) {
@@ -40,7 +45,7 @@ io.on('connection', (client) => {
         io.emit("message", data)
     });
 
-    io.emit("newuser", {
+    io.broadcast.emit("newuser", {
         id: client.id,
         name: token
     })
