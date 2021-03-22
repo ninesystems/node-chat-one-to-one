@@ -1,13 +1,21 @@
 # node-chat-one-to-one
 Node socket.io based one to one chat.
 
+## Installation
+take git repo using git clone
+Copy the env.sample file & paste it as .env file
+Change the env variables as you want
+
+yarn start
+
+
 
 ## Features
  1. One to one chat 
  2. Chat Rooms
  3. Individual login using passport.
  4. Bootstrap 4 UI
- 5. Seperate UI, so you can skin as you want.
+ 5. Separate UI, so you can skin as you want.
  6. Developed with Express.js, EJS, Socket.io
 
 

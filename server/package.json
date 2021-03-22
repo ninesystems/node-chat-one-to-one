@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node https.server.js && node io.server.js"
+    "start": "concurrently \"npm:ioserver\" \"npm:apiserver\"",
+    "apiserver": "node https.server.js",
+    "ioserver": "node io.server.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
@@ -14,6 +16,7 @@
     "socket.io": "^2.4.0"
   },
   "devDependencies": {
+    "concurrently": "^6.0.0",
     "nodemon": "^2.0.7"
   }
 }

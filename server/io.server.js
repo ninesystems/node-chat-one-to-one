@@ -2,10 +2,9 @@
 global.users = [];
 
 const io = require("socket.io")({
-    path: "/main",
     serveClient: false,
 });
-
+console.log("starting up io server");
 io.use((socket, next) => {
     let token = socket.handshake.query.username;
     if (token) {
@@ -51,3 +50,5 @@ io.attach(process.env.IO_PORT || 7777, {
     pingTimeout: 5000,
     cookie: false
 });
+
+console.log("IO Server started on ", process.env.IO_PORT || 7777);
